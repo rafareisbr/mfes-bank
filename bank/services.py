@@ -1,4 +1,5 @@
-from django.shortcuts import get_object_or_404
+from rest_framework.exceptions import ValidationError
+from rest_framework.generics import get_object_or_404
 
 from bank.models import Conta
 
@@ -19,7 +20,7 @@ class ContaService(object):
             conta.saldo -= valor_saque
             conta.save()
             return conta
-        raise Exception("recusado - saldo insuficiente")
+        raise ValidationError({"status": "Recusado: Saldo insuficiente"})
 
     @staticmethod
     def depositar(banco_numero, agencia_numero, conta_numero, valor_a_depositar):

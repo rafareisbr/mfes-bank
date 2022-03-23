@@ -1,6 +1,6 @@
 from django.db import transaction
-from django.shortcuts import get_object_or_404
 from rest_framework import serializers
+from rest_framework.generics import get_object_or_404
 
 from bank.models import Banco, Conta, Agencia, Titular
 
@@ -88,11 +88,11 @@ class AgenciaDetailsSerializer(serializers.ModelSerializer):
 
 
 class ValorSerializer(serializers.Serializer):
-    valor = serializers.DecimalField(max_digits=12, decimal_places=2, required=True)
+    valor = serializers.DecimalField(max_digits=12, decimal_places=2, required=True, min_value=0.01)
 
 
 class ContaTransferenciaSerializer(serializers.Serializer):
     banco_numero_destino = serializers.CharField(max_length=50)
     agencia_numero_destino = serializers.CharField(max_length=50)
     conta_numero_destino = serializers.CharField(max_length=50)
-    valor_a_transferir = serializers.DecimalField(max_digits=12, decimal_places=2, required=True)
+    valor_a_transferir = serializers.DecimalField(max_digits=12, decimal_places=2, required=True, min_value=0.01)

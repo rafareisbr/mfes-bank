@@ -110,4 +110,4 @@ class ContaTransferenciaView(APIView):
             conta_numero_destino=conta_numero_destino, valor_a_transferir=valor_a_transferir)
 
         if success:
-            return Response({"msg": "transferencia realizado com sucesso"})
+            return Response({"status": "transferencia realizado com sucesso"})

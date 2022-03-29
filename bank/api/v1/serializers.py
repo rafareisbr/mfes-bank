@@ -1,5 +1,6 @@
 from django.db import transaction
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 from rest_framework.generics import get_object_or_404
 
 from bank.models import Banco, Conta, Agencia, Titular
@@ -71,10 +72,14 @@ class ContaSerializer(serializers.ModelSerializer):
 
         # create titular
         titular_data = validated_data.pop('titular')
-        titular = Titular.objects.create(**titular_data)
+        titular = Titular.objects.filter(cpf=titular_data["cpf"])
 
-        conta = Conta(agencia=agencia, titular=titular, **validated_data)
+        if len(titular) is 0:
+            titular = Titular.objects.create(**titular_data)
+
+        conta = Conta(agencia=agencia, titular=titular[0], **validated_data)
         conta.save()
+
         return conta
 
 

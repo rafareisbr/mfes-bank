@@ -7,7 +7,7 @@ from rest_framework.status import HTTP_201_CREATED, HTTP_200_OK, HTTP_404_NOT_FO
     HTTP_202_ACCEPTED
 from rest_framework.views import APIView
 
-from bank.api.v2.serializers import BancoSerializer, ContaSerializer, ValorSerializer, \
+from bank.api.v1.serializers import BancoSerializer, ContaSerializer, ValorSerializer, \
     ContaTransferenciaSerializer, BancoDetailSerializer, AgenciaListSerializer, AgenciaDetailsSerializer
 from bank.models import Banco, Conta, Agencia
 from bank.services import ContaService

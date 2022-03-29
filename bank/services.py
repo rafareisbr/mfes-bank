@@ -8,18 +8,22 @@ class ContaService(object):
 
     @staticmethod
     def get_obj(banco_numero, agencia_numero, conta_numero):
-        conta = get_object_or_404(Conta, agencia__banco__numero=banco_numero, agencia__numero=agencia_numero,
+        conta = get_object_or_404(Conta,
+                                  agencia__banco__numero=banco_numero,
+                                  agencia__numero=agencia_numero,
                                   numero=conta_numero)
         return conta
 
     @staticmethod
     def sacar(banco_numero, agencia_numero, conta_numero, valor_saque):
-        conta = ContaService.get_obj(banco_numero=banco_numero, agencia_numero=agencia_numero,
+        conta = ContaService.get_obj(banco_numero=banco_numero,
+                                     agencia_numero=agencia_numero,
                                      conta_numero=conta_numero)
         if conta.saldo - valor_saque >= 0.0:
             conta.saldo -= valor_saque
             conta.save()
             return conta
+
         raise ValidationError({"status": "Recusado: Saldo insuficiente"})
 
     @staticmethod

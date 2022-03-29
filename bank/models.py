@@ -23,7 +23,7 @@ class Agencia(models.Model):
 
 class Titular(models.Model):
     nome = models.CharField(max_length=255)
-    cpf = models.CharField(max_length=11, unique=True,)
+    cpf = models.CharField(max_length=11)
 
     def __str__(self):
         return f"{self.nome} {self.cpf}"

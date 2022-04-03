@@ -1,1 +1,1 @@
-web: gunicorn projeto_final_mfes.wsgi
+web: gunicorn ProjetoFinalMFES.wsgi

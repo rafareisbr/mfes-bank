@@ -72,12 +72,9 @@ class ContaSerializer(serializers.ModelSerializer):
 
         # create titular
         titular_data = validated_data.pop('titular')
-        titular = Titular.objects.filter(cpf=titular_data["cpf"])
+        titular = Titular.objects.get_or_create(cpf=titular_data["cpf"], nome=titular_data["nome"])
 
-        if len(titular) is 0:
-            titular = Titular.objects.create(**titular_data)
-
-        conta = Conta(agencia=agencia, titular=titular[0], **validated_data)
+        conta = Conta(agencia=agencia, titular=titular, **validated_data)
         conta.save()
 
         return conta

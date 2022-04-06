@@ -1,4 +1,5 @@
-Disponível em: https://rafaelreisdjango.herokuapp.com/api/v1
+Disponível em: https://rafaelreisdjango.herokuapp.com/api/v1/
+Swagger em: https://rafaelreisdjango.herokuapp.com/api/docs/
 
 
 PS:

@@ -2,6 +2,7 @@ import decimal
 
 from django.db import transaction
 from rest_framework import generics
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.status import HTTP_201_CREATED, HTTP_200_OK, HTTP_404_NOT_FOUND, HTTP_400_BAD_REQUEST, \
     HTTP_202_ACCEPTED
@@ -31,14 +32,16 @@ class BancoDetailView(APIView):
 
 
 class AgenciaListView(generics.ListCreateAPIView):
+    serializer_class = AgenciaListSerializer
+
     def get_queryset(self):
-        queryset = Agencia.objects.filter(banco__numero=self.kwargs["banco_numero"])
+        banco_numero = self.kwargs.get("banco_numero", None)
+        queryset = Agencia.objects.filter(banco__numero=banco_numero)
         return queryset
 
     def get_serializer_context(self):
-        return {"banco_numero": self.kwargs["banco_numero"]}
-
-    serializer_class = AgenciaListSerializer
+        banco_numero = self.kwargs.get("banco_numero", None)
+        return {"banco_numero": banco_numero}
 
 
 class AgenciaDetailsView(APIView):

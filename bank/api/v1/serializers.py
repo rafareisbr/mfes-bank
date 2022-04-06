@@ -14,7 +14,7 @@ class BancoSerializer(serializers.ModelSerializer):
 
 
 class AgenciaListSerializer(serializers.ModelSerializer):
-    banco = serializers.CharField(source="banco.numero", read_only=True)
+    banco = serializers.CharField(source="banco.nome", read_only=True)
     contas_registradas = serializers.SerializerMethodField(read_only=True)
 
     class Meta:

@@ -1,0 +1,12 @@
+{
+  "dev": {
+    "database": {
+      "name": "trabalho",
+      "user": "postgres",
+      "password": "postgres",
+      "host": "localhost",
+      "post": "5432"
+    }
+  },
+  "prod": {}
+}

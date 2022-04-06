@@ -72,7 +72,10 @@ class ContaSerializer(serializers.ModelSerializer):
 
         # create titular
         titular_data = validated_data.pop('titular')
-        titular = Titular.objects.get_or_create(cpf=titular_data["cpf"], nome=titular_data["nome"])
+        titular, created = Titular.objects.get_or_create(cpf=titular_data["cpf"], nome=titular_data["nome"])
+
+        if created:
+            print("novo usuário")
 
         conta = Conta(agencia=agencia, titular=titular, **validated_data)
         conta.save()

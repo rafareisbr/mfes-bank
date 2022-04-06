@@ -81,24 +81,24 @@ WSGI_APPLICATION = 'ProjetoFinalMFES.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-print(os.environ.get('DATABASE_USER'))
-print(os.environ.get('PG_USER'))
-
-DATABASES = {
+# DATABASES = {
     # 'default': {
     #     'ENGINE': 'django.db.backends.sqlite3',
     #     'NAME': BASE_DIR / 'db.sqlite3',
     # }
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('DATABASE_NAME', 'trabalho'),
-        'USER': os.environ.get('PG_USER', 'postgres'),
-        'PASSWORD': os.environ.get('PG_DATABASE_PASSWORD', 'postgres'),
-        'HOST': os.environ.get('DATABASE_HOST', 'localhost'),
-        'PORT': '5432',
-    }
-}
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': os.getenv('DATABASE_NAME', 'trabalho'),
+    #     'USER': os.getenv('PG_USER', 'postgres'),
+    #     'PASSWORD': os.getenv('PG_DATABASE_PASSWORD', 'postgres'),
+    #     'HOST': os.getenv('DATABASE_HOST', 'localhost'),
+    #     'PORT': '5432',
+    # },
+# }
 
+DATABASES = {
+    'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators

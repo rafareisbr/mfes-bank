@@ -30,7 +30,6 @@ class AgenciaViewSet(viewsets.ModelViewSet):
 
 
 class ContaViewSet(viewsets.ModelViewSet):
-    serializer_class = ContaSerializer
     lookup_field = 'numero'
 
     def get_queryset(self):
@@ -38,48 +37,42 @@ class ContaViewSet(viewsets.ModelViewSet):
         agencia_numero = self.kwargs["agencia_numero"]
         return Conta.objects.filter(agencia__numero=agencia_numero, agencia__banco__numero=banco_numero)
 
-
-class ContaDepositoSaqueViewSet(viewsets.GenericViewSet):
-    serializer_class = ValorSerializer
-    lookup_field = "numero"
+    def get_serializer_class(self):
+        if self.action in ['sacar', 'depositar']:
+            return ValorSerializer
+        elif self.action == 'transferir':
+            return ContaTransferenciaSerializer
+        return ContaSerializer
 
     @action(detail=True, methods=['post'])
     @transaction.atomic()
-    def sacar(self, request, numero=None, *args, **kwargs):
-        banco_numero = self.kwargs["banco_numero"]
-        agencia_numero = self.kwargs["agencia_numero"]
-        conta_numero = numero
-
+    def sacar(self, request, *args, **kwargs):
+        conta = self.get_object()
         valor_saque = decimal.Decimal(request.data['valor'])
-        conta = ContaService.sacar(banco_numero=banco_numero, agencia_numero=agencia_numero, conta_numero=conta_numero,
+        conta = ContaService.sacar(instance=conta,
                                    valor_saque=valor_saque)
         serializer = ContaSerializer(conta)
         return Response(serializer.data, status=HTTP_202_ACCEPTED)
 
     @action(detail=True, methods=['post'])
     @transaction.atomic()
-    def depositar(self, request, numero=None, *args, **kwargs):
-        banco_numero = self.kwargs["banco_numero"]
-        agencia_numero = self.kwargs["agencia_numero"]
-        conta_numero = numero
-        valor_a_depositar = decimal.Decimal(request.data['valor'])
+    def depositar(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-        conta = ContaService.depositar(banco_numero=banco_numero, agencia_numero=agencia_numero, conta_numero=conta_numero,
+        conta = self.get_object()
+        valor_a_depositar = decimal.Decimal(request.data['valor'])
+        conta = ContaService.depositar(instance=conta,
                                        valor_a_depositar=valor_a_depositar)
         serializer = ContaSerializer(conta)
         return Response(serializer.data)
 
-
-class ContaTransferenciaViewSet(viewsets.GenericViewSet):
-    serializer_class = ContaTransferenciaSerializer
-    lookup_field = "numero"
-
     @action(detail=True, methods=['post'])
     @transaction.atomic()
-    def transferir(self, request, numero=None, *args, **kwargs):
-        banco_numero = self.kwargs["banco_numero"]
-        agencia_numero = self.kwargs["agencia_numero"]
-        conta_numero = numero
+    def transferir(self, request, *args, **kwargs):
+        banco_numero = self.kwargs['banco_numero']
+        agencia_numero = self.kwargs['agencia_numero']
+        conta_numero = self.kwargs['numero']
 
         valor_a_transferir = decimal.Decimal(request.data['valor_a_transferir'])
         banco_numero_destino = request.data['banco_numero_destino']

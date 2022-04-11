@@ -5,7 +5,7 @@ schema_view = get_swagger_view(title='Bank API')
 
 urlpatterns = [
     path("v1/", include('bank.api.v1.urls')),
-
+    path("v2/", include('bank.api.v2.urls')),
     path('docs/', schema_view)
 ]
 

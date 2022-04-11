@@ -1,5 +1,4 @@
 from django.urls import path
-from django.views.generic import TemplateView
 
 from bank.api.v1.views import BancoDetailView, ContaView, ContaSaqueView, AgenciaListView, ContaDepositoView, \
     ContaTransferenciaView, BancoListView, AgenciaDetailsView

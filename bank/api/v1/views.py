@@ -1,8 +1,8 @@
 import decimal
 
 from django.db import transaction
-from rest_framework import generics
-from rest_framework.exceptions import ValidationError
+from rest_framework import generics, viewsets, mixins
+from rest_framework.exceptions import ValidationError, NotFound
 from rest_framework.response import Response
 from rest_framework.status import HTTP_201_CREATED, HTTP_200_OK, HTTP_404_NOT_FOUND, HTTP_400_BAD_REQUEST, \
     HTTP_202_ACCEPTED
@@ -60,13 +60,13 @@ class ContaView(APIView):
     serializer_class = ContaSerializer
 
     def get(self, request, banco_numero, agencia_numero):
-        agencia = Agencia.objects.filter(banco__numero__exact=banco_numero, numero__exact=agencia_numero)
-        if len(agencia) > 0:
-            agencia = agencia[0]
+        try:
+            agencia = Agencia.objects.get(banco__numero=banco_numero, numero=agencia_numero)
             contas = Conta.objects.filter(agencia=agencia)
             serializer = ContaSerializer(contas, many=True)
             return Response(data=serializer.data, status=HTTP_200_OK)
-        return Response(data={"msg": "banco ou agencia não encontrados"}, status=HTTP_404_NOT_FOUND)
+        except Agencia.DoesNotExist:
+            raise NotFound(detail={"msg": "banco ou agencia não encontrados"})
 
     def post(self, request, banco_numero, agencia_numero):
         serializer = ContaSerializer(data=request.data,

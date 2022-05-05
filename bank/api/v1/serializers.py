@@ -101,3 +101,8 @@ class ContaTransferenciaSerializer(serializers.Serializer):
     agencia_numero_destino = serializers.CharField(max_length=50)
     conta_numero_destino = serializers.CharField(max_length=50)
     valor_a_transferir = serializers.DecimalField(max_digits=12, decimal_places=2, required=True, min_value=0.01)
+
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=255)
+    password = serializers.CharField(max_length=255)

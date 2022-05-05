@@ -1,15 +1,35 @@
 import decimal
 
+from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
 from django.db import transaction
-from rest_framework import viewsets
+from rest_framework import viewsets, views, mixins
+from rest_framework.authtoken.admin import User
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.status import HTTP_202_ACCEPTED
+from rest_framework.status import HTTP_202_ACCEPTED, HTTP_204_NO_CONTENT
 
 from bank.api.v1.serializers import BancoSerializer, ContaSerializer, AgenciaListSerializer, ValorSerializer, \
-    ContaTransferenciaSerializer
+    ContaTransferenciaSerializer, LoginSerializer
 from bank.models import Banco, Conta, Agencia
 from bank.services import ContaService
+
+
+# class AuthenticationViewSet(viewsets.ModelViewSet):
+#
+#     def get_serializer_class(self):
+#         if self.action == 'login':
+#             return LoginSerializer
+#
+#     @action(methods=['POST'], detail=False)
+#     def login(self, request):
+#         username = request.data["username"]
+#         password = request.data["password"]
+#
+#         user = authenticate(username=username, password=password)
+#         if user:
+#             return Response(data={"msg": user})
+#         return Response(data={ user.errors }, status=HTTP_204_NO_CONTENT)
 
 
 class BancoViewSet(viewsets.ModelViewSet):

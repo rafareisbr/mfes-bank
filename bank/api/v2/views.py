@@ -6,6 +6,7 @@ from django.db import transaction
 from rest_framework import viewsets, views, mixins
 from rest_framework.authtoken.admin import User
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.status import HTTP_202_ACCEPTED, HTTP_204_NO_CONTENT
 
@@ -35,6 +36,7 @@ from bank.services import ContaService
 class BancoViewSet(viewsets.ModelViewSet):
     serializer_class = BancoSerializer
     lookup_field = 'numero'
+    permission_classes = [IsAuthenticatedOrReadOnly,]
 
     def get_queryset(self, **kwargs):
         return Banco.objects.all()
@@ -43,6 +45,7 @@ class BancoViewSet(viewsets.ModelViewSet):
 class AgenciaViewSet(viewsets.ModelViewSet):
     serializer_class = AgenciaListSerializer
     lookup_field = 'numero'
+    permission_classes = [IsAuthenticatedOrReadOnly,]
 
     def get_queryset(self):
         banco_numero = self.kwargs["banco_numero"]
@@ -51,11 +54,17 @@ class AgenciaViewSet(viewsets.ModelViewSet):
 
 class ContaViewSet(viewsets.ModelViewSet):
     lookup_field = 'numero'
+    permission_classes = [IsAuthenticatedOrReadOnly,]
 
     def get_queryset(self):
         banco_numero = self.kwargs["banco_numero"]
         agencia_numero = self.kwargs["agencia_numero"]
         return Conta.objects.filter(agencia__numero=agencia_numero, agencia__banco__numero=banco_numero)
+
+    def get_serializer_context(self):
+        banco_numero = self.kwargs["banco_numero"]
+        agencia_numero = self.kwargs["agencia_numero"]
+        return {"banco_numero": banco_numero, "agencia_numero": agencia_numero}
 
     def get_serializer_class(self):
         if self.action in ['sacar', 'depositar']:

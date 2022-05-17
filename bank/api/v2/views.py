@@ -47,6 +47,10 @@ class AgenciaViewSet(viewsets.ModelViewSet):
     lookup_field = 'numero'
     permission_classes = [IsAuthenticatedOrReadOnly,]
 
+    def get_serializer_context(self):
+        banco_numero = self.kwargs["banco_numero"]
+        return {"banco_numero": banco_numero}
+
     def get_queryset(self):
         banco_numero = self.kwargs["banco_numero"]
         return Agencia.objects.filter(banco__numero=banco_numero)

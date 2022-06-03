@@ -1,17 +1,15 @@
 import decimal
 
-from django.contrib.auth import authenticate
-from django.contrib.auth.models import User
 from django.db import transaction
-from rest_framework import viewsets, views, mixins
-from rest_framework.authtoken.admin import User
+from rest_framework import viewsets
 from rest_framework.decorators import action
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.status import HTTP_202_ACCEPTED, HTTP_204_NO_CONTENT
 
 from bank.api.v1.serializers import BancoSerializer, ContaSerializer, AgenciaListSerializer, ValorSerializer, \
-    ContaTransferenciaSerializer, LoginSerializer
+    ContaTransferenciaSerializer
 from bank.models import Banco, Conta, Agencia
 from bank.services import ContaService
 
@@ -58,7 +56,7 @@ class AgenciaViewSet(viewsets.ModelViewSet):
 
 class ContaViewSet(viewsets.ModelViewSet):
     lookup_field = 'numero'
-    permission_classes = [IsAuthenticatedOrReadOnly,]
+    pagination_class = PageNumberPagination
 
     def get_queryset(self):
         banco_numero = self.kwargs["banco_numero"]
@@ -100,6 +98,7 @@ class ContaViewSet(viewsets.ModelViewSet):
         serializer = ContaSerializer(conta)
         return Response(serializer.data)
 
+    """CRIAR FUNCIONALIDADE DE TRANSFERENCIA AGENDADA celery"""
     @action(detail=True, methods=['post'])
     @transaction.atomic()
     def transferir(self, request, *args, **kwargs):
